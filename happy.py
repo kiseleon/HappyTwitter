@@ -1,5 +1,5 @@
 from TwitterAPI import TwitterAPI
-
+import sqlite3
 import secrets  # this is the file that stores the secrets
 
 CONSUMER_KEY = secrets.get_consumer_key()
@@ -18,7 +18,7 @@ api = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_S
 #for item in r:
 #    print(item)
 
-r = api.request('statuses/filter', {'track': ['ninja'], 'language': 'en'})
+r = api.request('statuses/filter', {'track': ['good friend'], 'language': 'en'})
 
 for item in r:
     print(item['text'] if 'text' in item else item)

@@ -18,27 +18,31 @@ conn = db_connect()
 # r = api.request('search/tweets', {'q': 'happy'})
 # for item in r:
 # print(item)
-keyword = 'kindness'
+keyword = 'joy,laughter,glad,blessed,ecstatic,excited,kindness,grace,sweetness,understanding,patience'
 
 r = api.request('statuses/filter', {'track': [keyword], 'language': 'en'})
-rt = 0
+
 for item in r:
     print(item['text'] if 'text' in item else item)
-    statement = item['text']
-    split = statement.split(' ', 1)
-    username = split[0]
-    tweet = split[1]
-    print username
-    print tweet
-    if "RT" == split[0]:
-        rt = 1
-        conn.execute("INSERT INTO parentUsers (username, tweets, keywords, retweet) \
-                     VALUES (" + username + ","+ str(tweet) +","+keyword+","+rt+")");
-    elif "@" == split[0][0]:
-        rt = 0
-        conn.execute("INSERT INTO parentUsers (username, tweets, keywords, retweet) \
-                     VALUES (" + username + ","+ str(tweet) +","+keyword+","+rt+")");
-    conn.commit()
+    if 'text' in item :
+        statement = item['text']
+        split = statement.split(' ', 1)
+        username = split[0]
+        tweet = item['text']
+        rt_name = item['user']['screen_name']
+
+        """This should split on retweets"""
+        if "RT" is split[0]:
+            rt_split = split.split()
+            username = rt_split[1]
+            conn.execute("INSERT INTO retweetUsers (username, rtusername, tweets, keywords) \
+                      VALUES (" + username + ","+rt_name+","+ str(tweet) +","+keyword+")");
+            conn.commit()
+        elif "@" is split[0][0]:
+            conn.execute("INSERT INTO parentUsers (username, tweets, keywords, retweet) \
+                       VALUES (" + rt_name + ","+ str(tweet) +","+keyword+")");
+            conn.commit()
+
     print "records created successful"
     conn.close()
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="1304557556">
+  <component name="DataSourceManagerImpl" format="xml" hash="2389140339">
     <data-source source="LOCAL" name="Sqlite (Xerial) - goodness.db" uuid="dfa686ba-56fb-4cbc-a6a3-ecd312e9baf1">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
@@ -8,6 +8,18 @@
       <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/goodness.db</jdbc-url>
     </data-source>
     <data-source source="LOCAL" name="Sqlite (Xerial) - goodness.db [2]" uuid="5c2f0cf9-ebd2-4137-9b26-83b746cdd491">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/goodness.db</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="Sqlite (Xerial) - goodness.db [3]" uuid="a0b13a36-5e97-4e5c-9d04-c897ddeffc69">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/goodness.db</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="Sqlite (Xerial) - goodness.db [4]" uuid="00e5bc01-6ec3-44f1-8dea-aec0ea4498e6">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

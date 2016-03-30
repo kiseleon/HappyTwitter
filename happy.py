@@ -24,27 +24,25 @@ r = api.request('statuses/filter', {'track': [keyword], 'language': 'en'})
 
 for item in r:
     print(item['text'] if 'text' in item else item)
-    if 'text' in item :
+    if 'text' in item:
         statement = item['text']
-        split = statement.split(' ', 1)
+        split = statement.split(' ', 2)
         username = split[0]
         tweet = item['text']
         rt_name = item['user']['screen_name']
+        tweet_id = item['id']
 
         """This should split on retweets"""
-        if "RT" is split[0]:
-            rt_split = split.split()
-            username = rt_split[1]
-            conn.execute("INSERT INTO retweetUsers (username, rtusername, tweets, keywords) \
-                      VALUES (" + username + ","+rt_name+","+ str(tweet) +","+keyword+")");
+        if "RT" == split[0]:  # is didn't work here for whatever reason, so == it is
+            username = item['retweeted_status']['user']['screen_name']
+            conn.execute("INSERT INTO retweetUsers (username, rtusername, tweets, keywords, tweet_id, original_tweet_id) VALUES (?, ?, ?, ?, ?, ?)", [username, rt_name, tweet, keyword, tweet_id, item['retweeted_status']['id']])
             conn.commit()
-        elif "@" is split[0][0]:
-            conn.execute("INSERT INTO parentUsers (username, tweets, keywords, retweet) \
-                       VALUES (" + rt_name + ","+ str(tweet) +","+keyword+")");
+        else:  # "@" is split[0][0]: # This only grabs tweets that start by referencing another person, whereas we want all non-retweets here
+            conn.execute("INSERT INTO parentUsers (username, tweets, keywords, tweet_id) VALUES (?, ?, ?, ?)", [rt_name, tweet, keyword, tweet_id])
             conn.commit()
 
-    print "records created successful"
-    conn.close()
+print("records created successful")
+conn.close()
 
 
         # Print HTTP status code (=200 when no errors).

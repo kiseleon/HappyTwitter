@@ -33,7 +33,7 @@ for item in r:
         tweet_id = item['id']
 
         """This should split on retweets"""
-        if "RT" == split[0]:  # is didn't work here for whatever reason, so == it is
+        if "RT" == split[0] and 'retweeted_status' in item:  # is didn't work here for whatever reason, so == it is
             username = item['retweeted_status']['user']['screen_name']
             conn.execute("INSERT INTO retweetUsers (username, rtusername, tweets, keywords, tweet_id, original_tweet_id) VALUES (?, ?, ?, ?, ?, ?)", [username, rt_name, tweet, keyword, tweet_id, item['retweeted_status']['id']])
             conn.commit()

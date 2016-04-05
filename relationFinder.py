@@ -2,6 +2,7 @@ from pythonDB import db_connect
 from TwitterAPI import TwitterAPI
 from TwitterRelations import TwitterRelations
 import secrets
+import csv
 
 conn = db_connect()
 c = conn.cursor()
@@ -14,8 +15,17 @@ api = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_S
 
 diction_Users = {}
 
-def grabDB():
+def find_keyword(keyword):
 
+    print keyword
+
+    list = ['joy', 'laughter', 'glad', 'blessed', 'ecstatic', 'excited', 'kindness', 'grace', 'sweetness', 'understanding', 'patience']
+    for item in list:
+        if item in keyword:
+            print "find " + item
+            return item
+
+def fill():
     c.execute('SELECT original_tweet_id FROM retweetUsers')
     contents = c.fetchall()
     i = 0
@@ -23,18 +33,28 @@ def grabDB():
         try:
             print "rows ", row
             r = api.request('statuses/show/:%d' % row)
-
             for item in r:
-                if(item[''])
-                reUsers = item['in_reply_to_status_id']
-                list = reUsers
-                i = diction_Users[item['user']['screen_name']]
-                diction_Users[item['user']['screen_name']] = i+1
+                reUsers = item['in_reply_to_screen_name']
+                tweet = item['text']
+                diction_Users[item['user']['screen_name']] = TwitterRelations(num = 0, userList=reUsers, keyword=find_keyword(tweet))
         except:
-            conn = db_connect()
             r = api.request('statuses/show/:%d' % row)
 
+def grabDB():
+    c.execute('SELECT original_tweet_id FROM retweetUsers')
+    contents = c.fetchall()
+    i = 0
+    for row in contents:
+        try:
+            print "rows ", row
+            r = api.request('statuses/show/:%d' % row)
+            for item in r:
+                twitterRelations = diction_Users[item['user']['screen_name']]
+                twitterRelations.setNum_Tweets(i=i + 1)
+                diction_Users[item['user']['screen_name']] = twitterRelations
+        except:
+            r = api.request('statuses/show/:%d' % row)
 
-
+fill()
 grabDB()
-print diction_Users
+conn.close()

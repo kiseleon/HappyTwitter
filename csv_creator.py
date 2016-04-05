@@ -1,12 +1,11 @@
 import csv
 from pythonDB import db_connect
 
-
 # open the database
 connect = db_connect()
 
 # to use for fetching rows
-cursor = connect.execute("SELECT username, rtusername from retweetUsers")
+cursor = connect.execute("SELECT rtusername from retweetUsers")
 
 with open('mapdata.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile, delimiter=',',

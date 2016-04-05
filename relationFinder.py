@@ -15,6 +15,7 @@ api = TwitterAPI(CONSUMER_KEY, CONSUMER_SECRET, ACCESS_TOKEN_KEY, ACCESS_TOKEN_S
 
 diction_Users = {}
 
+
 def find_keyword(keyword):
 
     print keyword
@@ -26,19 +27,25 @@ def find_keyword(keyword):
             return item
 
 def fill():
-    c.execute('SELECT original_tweet_id FROM retweetUsers')
-    contents = c.fetchall()
-    i = 0
-    for row in contents:
-        try:
-            print "rows ", row
-            r = api.request('statuses/show/:%d' % row)
-            for item in r:
-                reUsers = item['in_reply_to_screen_name']
-                tweet = item['text']
-                diction_Users[item['user']['screen_name']] = TwitterRelations(num = 0, userList=reUsers, keyword=find_keyword(tweet))
-        except:
-            r = api.request('statuses/show/:%d' % row)
+    with open('mapdata.csv', 'w') as csvfile:
+        writer = csv.writer(csvfile, delimiter=',',
+                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+        contents = c.execute('SELECT rtusername, original_tweet_id FROM retweetUsers')
+
+        for row in contents:
+            try:
+                print "rows ", row[0]
+                r = api.request('statuses/show/:%d' % row[1])
+
+                for item in r:
+                    reUsers = item['in_reply_to_screen_name']
+                    tweet = item['text']
+                    username = item['user']['screen_name']
+                    keyword = find_keyword(tweet)
+                    writer.writerow([username, row[0], keyword, reUsers])
+            except:
+                r = api.request('statuses/show/:%d' % row[1])
 
 def grabDB():
     c.execute('SELECT original_tweet_id FROM retweetUsers')

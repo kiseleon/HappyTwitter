@@ -3,6 +3,7 @@ from TwitterAPI import TwitterAPI
 from TwitterRelations import TwitterRelations
 import secrets
 import csv
+from time import sleep
 
 conn = db_connect()
 c = conn.cursor()
@@ -17,19 +18,23 @@ diction_Users = {}
 
 
 def find_keyword(keyword):
-
     print keyword
 
-    list = ['joy', 'laughter', 'glad', 'blessed', 'ecstatic', 'excited', 'kindness', 'grace', 'sweetness', 'understanding', 'patience']
+    list = ['joy', 'laughter', 'glad', 'blessed', 'ecstatic', 'excited', 'kindness', 'grace', 'sweetness',
+            'understanding', 'patience']
     for item in list:
-        if item in keyword:
+        if item in keyword.lower():
             print "find " + item
             return item
+
 
 def fill():
     with open('mapdata.csv', 'w') as csvfile:
         writer = csv.writer(csvfile, delimiter=',',
                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
+
+        keyword_map = {'joy': 1, 'laughter': 2, 'glad': 3, 'blessed': 4, 'ecstatic': 5, 'excited': 6, 'kindness': 7,
+                       'grace': 8, 'sweetness': 9, 'understanding': 10, 'patience': 11}
 
         contents = c.execute('SELECT rtusername, original_tweet_id FROM retweetUsers')
 
@@ -43,9 +48,12 @@ def fill():
                     tweet = item['text']
                     username = item['user']['screen_name']
                     keyword = find_keyword(tweet)
-                    writer.writerow([username, row[0], keyword, reUsers])
+                    writer.writerow([username, row[0], keyword, reUsers, keyword_map[keyword]])
             except:
+                print "trying again"
+                # sleep(900)
                 r = api.request('statuses/show/:%d' % row[1])
+
 
 def grabDB():
     c.execute('SELECT original_tweet_id FROM retweetUsers')
@@ -61,6 +69,7 @@ def grabDB():
                 diction_Users[item['user']['screen_name']] = twitterRelations
         except:
             r = api.request('statuses/show/:%d' % row)
+
 
 fill()
 grabDB()
